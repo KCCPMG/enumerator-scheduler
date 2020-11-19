@@ -1,38 +1,136 @@
-.App {
+body {
+  font-family: 'Times New Roman';
+}
+
+.nav {
+  background-color: lightblue;
+  font-size: 32px;
+  color: white;
+  /* text-align: center; */
+}
+
+.time-input {
+  width: 90px;
+}
+
+.time-input-invalid {
+  background-color: pink;
+}
+
+.time-input > option {
+  background-color: white;
+}
+
+.enumerator-master-container {
+  padding-bottom: 20px;
+}
+
+.enumerator-container {
+  padding: 15px;
+}
+
+.time-block-row {
+  /* display: flex; */
+  /* justify-content: space-evenly; */
+}
+
+.time-block-to-div {
+  /* justify-content: center; */
+  max-width: 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.enumerator-container:nth-child(odd) {
+  background-color: #e2e2e2; 
+}
+
+button {
+  background-color: white;
+}
+
+.enumerator-container:nth-child(even) {
+  background-color: lightblue;
+}
+
+.enumerator-container:nth-child(even) > div > div > div > button {
+  background-color: #e2e2e2;
+}
+
+.enumerator-container:nth-child(odd) > .row > .enumerator-availability-col > .row > .rendered-time-block > .warning > .warning-span{
+  background-color:white;
+}
+
+.enumerator-container:nth-child(even) > .row > .enumerator-availability-col > .row > .rendered-time-block > .warning > .warning-span {
+  background-color:#e2e2e2;
+}
+
+
+.warning {
+  /*  */
+}
+
+.warning-span {
+  margin: 5px;
+  padding: 2px;
+  text-align: center;
+  color: black;
+  border: 1px solid black;
+  border-radius: 2px;
+}
+
+.enumerator-row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.enumerator-name {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.enumerator-name-row {
+  align-items: center;
+  line-height: 30px;
+  font-size: 18px;
+}
+
+.rendered-time-block {
+  align-items: center;
+  margin-left:5px;
+  margin-right:5px;
+}
+
+.adjust-priority {
+  height: inherit;
+  display: inline-block;
+  font-size: 10px;
+  vertical-align: middle;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.adjust-priority:hover {
+  cursor: pointer;
+}
+
+.delete-enumerator-icon {
+  font-size: 30px;
+  float: right;
+}
+
+.delete-enumerator-icon:hover {
+  cursor: pointer;
+  color: red;  
+  font-weight: bold;
+}
+
+.optimizer {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.optimizer-header {
+  text-align: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
