@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/enumerator-scheduler/static/css/main.68e2a90e.chunk.css",
+    "main.js": "/enumerator-scheduler/static/js/main.ef4b9a5d.chunk.js",
+    "main.js.map": "/enumerator-scheduler/static/js/main.ef4b9a5d.chunk.js.map",
+    "runtime-main.js": "/enumerator-scheduler/static/js/runtime-main.101f0c60.js",
+    "runtime-main.js.map": "/enumerator-scheduler/static/js/runtime-main.101f0c60.js.map",
+    "static/js/2.ef8fdaff.chunk.js": "/enumerator-scheduler/static/js/2.ef8fdaff.chunk.js",
+    "static/js/2.ef8fdaff.chunk.js.map": "/enumerator-scheduler/static/js/2.ef8fdaff.chunk.js.map",
+    "index.html": "/enumerator-scheduler/index.html",
+    "precache-manifest.7d0aae1547bd3c29a3c16a4902c76492.js": "/enumerator-scheduler/precache-manifest.7d0aae1547bd3c29a3c16a4902c76492.js",
+    "service-worker.js": "/enumerator-scheduler/service-worker.js",
+    "static/css/main.68e2a90e.chunk.css.map": "/enumerator-scheduler/static/css/main.68e2a90e.chunk.css.map",
+    "static/js/2.ef8fdaff.chunk.js.LICENSE.txt": "/enumerator-scheduler/static/js/2.ef8fdaff.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.101f0c60.js",
+    "static/js/2.ef8fdaff.chunk.js",
+    "static/css/main.68e2a90e.chunk.css",
+    "static/js/main.ef4b9a5d.chunk.js"
+  ]
+}
