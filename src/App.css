@@ -1,3 +1,7 @@
+:root {
+  --time-display-height: 252px;
+}
+
 body {
   font-family: 'Times New Roman';
 }
@@ -6,8 +10,19 @@ body {
   background-color: lightblue;
   font-size: 32px;
   color: white;
-  /* text-align: center; */
 }
+
+.help-modal-question-mark:hover {
+  cursor: pointer;
+}
+
+
+#help-modal{
+  width: 80%;
+  max-width: 80%;
+  white-space: pre-line;
+}
+
 
 .time-input {
   width: 90px;
@@ -23,19 +38,14 @@ body {
 
 .enumerator-master-container {
   padding-bottom: 20px;
+  margin-bottom: var(--time-display-height);
 }
 
 .enumerator-container {
   padding: 15px;
 }
 
-.time-block-row {
-  /* display: flex; */
-  /* justify-content: space-evenly; */
-}
-
 .time-block-to-div {
-  /* justify-content: center; */
   max-width: 20px;
   text-align: center;
   display: flex;
@@ -50,25 +60,16 @@ button {
   background-color: white;
 }
 
+button:hover {
+  font-weight: bold;
+}
+
 .enumerator-container:nth-child(even) {
   background-color: lightblue;
 }
 
-.enumerator-container:nth-child(even) > div > div > div > button {
-  background-color: #e2e2e2;
-}
-
-.enumerator-container:nth-child(odd) > .row > .enumerator-availability-col > .row > .rendered-time-block > .warning > .warning-span{
-  background-color:white;
-}
-
 .enumerator-container:nth-child(even) > .row > .enumerator-availability-col > .row > .rendered-time-block > .warning > .warning-span {
   background-color:#e2e2e2;
-}
-
-
-.warning {
-  /*  */
 }
 
 .warning-span {
@@ -78,6 +79,7 @@ button {
   color: black;
   border: 1px solid black;
   border-radius: 2px;
+  background-color: white;
 }
 
 .enumerator-row {
@@ -134,3 +136,42 @@ button {
   text-align: center;
 }
 
+.priority-block:hover {
+  cursor: pointer;
+}
+
+.priority-circle {
+  margin: auto;
+  position: relative;
+  top: 25%;
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 20px;
+  background-color: lightsalmon;
+  color: black;
+  font-weight: bold;
+}
+
+#time-display {
+  background-color: white;
+  position: fixed;
+  bottom: 0;
+  height: var(--time-display-height)
+}
+
+#time-display > div > .row {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.hover-display-area {
+  height: 45px;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+  line-height: 24px;
+  width: 100%;
+}

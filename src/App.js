@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import './stylesheets/bootstrap.css'
-import {Navbar, Container, Row, Col} from 'react-bootstrap'
+import {Navbar, Container, Row, Col, Modal} from 'react-bootstrap'
 
 const TIMES = [
   '8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM',
@@ -73,6 +73,7 @@ class App extends React.Component {
     super(props);
 
     this.state = {
+      showModal: false,
       currentDate: new Date(),
       nextId: 1,
       enumerators: [],
@@ -85,7 +86,44 @@ class App extends React.Component {
     }
   }
 
+  // Testing 
+  // componentDidMount = () => {
+    
+  //   console.log('mounted');
+    
+  //   this.addEnumerator()
+  //   .then(()=>{
+  //     return this.changeEnumeratorName(1, "Pierre")
+  //   })
+  //   .then(() => {
+  //     return this.adjustPriority(1, 1)
+  //   })
+  //   .then(this.addEnumerator)
+  //   .then(()=> this.changeEnumeratorName(2, "Lindsay"))
+  //   .then(() => this.addTime(1, AVAILABILITY))
+  //   .then(() => this.addTime(1, ASSIGNED_SHIFTS))
+  //   .then(() => this.addTime(1, AVAILABILITY))
+  //   .then(() => this.addTime(2, AVAILABILITY))
+  //   .then(() => this.addTime(2, ASSIGNED_SHIFTS))
+  //   .then(() => this.modifyTime(AVAILABILITY, START_TIME, 1, 0, "12:00 PM"))
+  //   .then(() => this.modifyTime(AVAILABILITY, END_TIME, 1, 0, "2:00 PM"))
+  //   .then(() => this.modifyTime(AVAILABILITY, START_TIME, 2, 0, "11:00 AM"))
+  //   .then(() => this.modifyTime(AVAILABILITY, END_TIME, 2, 0, "5:00 PM"))
+  //   .then(() => this.modifyTime(AVAILABILITY, START_TIME, 1, 1, "3:00 PM"))
+  //   .then(() => this.modifyTime(AVAILABILITY, END_TIME, 1, 1, "6:00 PM"))
+  //   .then(() => this.modifyTime(ASSIGNED_SHIFTS, START_TIME, 1, 0, "12:00 PM"))
+  //   .then(() => this.modifyTime(ASSIGNED_SHIFTS, END_TIME, 1, 0, "2:00 PM"))
+  //   .then(() => this.modifyTime(ASSIGNED_SHIFTS, START_TIME, 2, 0, "11:00 AM"))
+  //   .then(() => this.modifyTime(ASSIGNED_SHIFTS, END_TIME, 2, 0, "4:00 PM"))
 
+
+  // }
+
+  setShowModal = ()=> {
+    this.setState({
+      showModal: !this.state.showModal
+    })
+  }
 
   updateState = (stateObj) => {
     console.log(stateObj);
@@ -98,12 +136,6 @@ class App extends React.Component {
     let types = [AVAILABILITY, ASSIGNED_SHIFTS, CLAIMED_SHIFTS];
 
 
-
-    // test
-    [currentAssignedShiftIntervals, currentAssignedShiftWindows, currentAvailabilityIntervals, currentAvailabilityWindows, currentClaimedShiftIntervals, currentClaimedShiftWindows, currentDate, enumerators].forEach(el => {
-      if (el===undefined) console.log({el}); //this won't work right, whatever
-    });
-
     // assume that changes are all within stateObj.currentDate
     [currentAssignedShiftIntervals, currentAssignedShiftWindows, currentAvailabilityIntervals, currentAvailabilityWindows, currentClaimedShiftIntervals, currentClaimedShiftWindows].forEach(el => el = []);
 
@@ -115,9 +147,6 @@ class App extends React.Component {
         }
       }
     }
-
-    // clear all time intervals and blocks
-
     
     // check overlap validity
     for (let type of types) {
@@ -142,8 +171,6 @@ class App extends React.Component {
         }
       }
     }
-    
-
 
     // check order validity
     for (let type of types) {
@@ -158,7 +185,6 @@ class App extends React.Component {
 
 
     // update time intervals
-    // let intervals = [currentAssignedShiftIntervals, currentAvailabilityIntervals, currentClaimedShiftIntervals];
 
     currentAvailabilityIntervals = [];
     currentAssignedShiftIntervals = [];
@@ -193,11 +219,7 @@ class App extends React.Component {
       currentClaimedShiftIntervals.sort((a,b) => a-b).map(el => el.valueOf())
     )).map(el => new Date(el));
 
-
-
     // update windows
-    // Testing this, when working update other windows
-    // console.log(currentAvailabilityIntervals);
     currentAvailabilityWindows = [];
     for (let i in currentAvailabilityIntervals) {
       if (i < currentAvailabilityIntervals.length-1) {
@@ -288,32 +310,13 @@ class App extends React.Component {
     }
     console.log(stateObj);
 
-    // for (let windows of windowTypes) {
-    //   for (let window of windows) {
-    //     window.start = formatDateForTimeInput(window.start);
-    //     window.end = formatDateForTimeInput(window.end);
-    //   }
-    // }
+    // Promise only for testing
+    // return new Promise(res => {
+    //   this.setState(stateObj, res);
+    // });
 
-    // set state
-    this.setState(stateObj);
-
+    this.setState(stateObj)
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   updateCurrentTimeIntervals = (type, cb) => {
@@ -475,17 +478,7 @@ class App extends React.Component {
     
     stateObj.currentDate = new Date(dateValue.getTime() + dateValue.getTimezoneOffset()*60*1000)
 
-    this.updateState(stateObj);
-
-    // this.setState({
-    //   currentDate: new Date(dateValue.getTime() + dateValue.getTimezoneOffset()*60*1000)
-    // }, ()=>{
-    //   this.updateCurrentTimeIntervals(AVAILABILITY, ()=>{
-    //     this.updateCurrentTimeIntervals(ASSIGNED_SHIFTS, ()=>{
-    //       this.updateCurrentTimeIntervals(CLAIMED_SHIFTS);
-    //     });
-    //   });
-    // })
+    return this.updateState(stateObj);
   }
 
   addEnumerator = () => {
@@ -505,12 +498,8 @@ class App extends React.Component {
     stateObj.nextId++;
     console.log("after assignment", {stateObj});
     enumerators.push(newEnumerator);
-    // this.setState({
-    //   nextId: this.state.nextId + 1,
-    //   enumerators
-    // })
-    console.log(stateObj);
-    this.updateState(stateObj);
+
+    return this.updateState(stateObj);
   }
 
   deleteEnumerator = (id) => {
@@ -520,13 +509,8 @@ class App extends React.Component {
       if (enumerator.id===id) return false;
       else return true;
     })
-    // this.setState(stateObj, ()=>{
-    //   this.updateCurrentTimeIntervals(AVAILABILITY);
-    //   this.updateCurrentTimeIntervals(ASSIGNED_SHIFTS);
-    //   this.updateCurrentTimeIntervals(CLAIMED_SHIFTS);
-    // });
 
-    this.updateState(stateObj);
+    return this.updateState(stateObj);
   }
 
   adjustPriority = (id, increase) => {
@@ -537,29 +521,9 @@ class App extends React.Component {
 
     let adjustment = increase ? 1 : -1;
 
-    foundEnum.priority = foundEnum.priority + adjustment;
+    foundEnum.priority = Math.min(Math.max((foundEnum.priority + adjustment), 0), 9)
 
-    // this.setState(stateObj, ()=>{
-    //   this.updateCurrentTimeIntervals(AVAILABILITY, ()=>{
-    //     this.updateCurrentTimeIntervals(ASSIGNED_SHIFTS,  ()=>{
-    //       this.updateCurrentTimeIntervals(CLAIMED_SHIFTS);
-    //     });
-    //   });
-    // });
-
-
-    // this.setState(stateObj, ()=> {
-    //   this.checkValidity(AVAILABILITY, ()=>{
-    //     this.updateCurrentTimeIntervals(AVAILABILITY, ()=>{
-    //       this.checkValidity(ASSIGNED_SHIFTS, ()=>{
-    //         this.updateCurrentTimeIntervals(ASSIGNED_SHIFTS, ()=>{
-    //           this.checkValidity(CLAIMED_SHIFTS, ()=>{this.updateCurrentTimeIntervals(CLAIMED_SHIFTS)})
-    //         })
-    //       })
-    //     })
-    //   })
-    // });
-    this.updateState(stateObj);
+    return this.updateState(stateObj);
   }
 
   changeEnumeratorName = (id, newName) => {
@@ -568,7 +532,7 @@ class App extends React.Component {
     let foundEnum = stateObj.enumerators.find(enumerator => enumerator.id===id);
     foundEnum.name = newName;
     console.log({stateObj, id, newName})
-    this.setState(stateObj)
+    return this.setState(stateObj)
   }
 
   addAvailability = (id) => {
@@ -584,8 +548,8 @@ class App extends React.Component {
       startTime: this.state.currentDate,
       endTime: this.state.currentDate
     })
-    // this.setState(stateObj);
-    this.updateState(stateObj);
+
+    return this.updateState(stateObj);
   }
 
   addTime = (id, type) => {
@@ -614,17 +578,8 @@ class App extends React.Component {
       endTime,
       valid: false
     })
-    // this.setState(stateObj, ()=> {
-    //   this.updateCurrentTimeIntervals(type, ()=>{
-    //     this.checkValidity(type)
-    //   });
-    // });
 
-
-    // this.setState(stateObj, ()=> {
-    //   this.checkValidity(type, ()=>{this.updateCurrentTimeIntervals(type)})
-    // })
-    this.updateState(stateObj);
+    return this.updateState(stateObj);
   }
 
   deleteTime = (type, enumId, blockId) => {
@@ -635,52 +590,13 @@ class App extends React.Component {
 
     let foundEnumerator = enumerators.find((enumerator) => enumerator.id===enumId);
 
-    // foundEnumerator[type].forEach(block => {
-    //   console.log(block.id, blockId, block.id===blockId)
-    // })
-
-    // console.log(foundEnumerator[type].filter(block => {
-    //   if (block.id === blockId) return false;
-    //   else return true;
-    // }))
-
     foundEnumerator[type] = foundEnumerator[type].filter(block => {
       if (block.id === blockId) return false;
       else return true;
     })
 
-    // console.log(foundEnumerator[type])
-    // console.log(enumerators);
-    
-    // this.setState({enumerators}, ()=>{
-    //   this.updateCurrentTimeIntervals(type, ()=>{
-    //     this.checkValidity(type)
-    //   });
-    // });
-    // this.setState(stateObj, ()=> {
-    //   this.checkValidity(type, ()=>{this.updateCurrentTimeIntervals(type)})
-    // })
-
-    this.updateState(stateObj);
+    return this.updateState(stateObj);
   }
-
-
-  // deleteAvailability = (enumId, availId) => {
-  //   let enumerators = JSON.parse(JSON.stringify(this.state.enumerators))
-  //   let foundEnumerator = enumerators.find((enumerator) => enumerator.id===enumId)
-
-  //   foundEnumerator.availability = foundEnumerator.availability.filter((avail) => {
-  //     if (avail.id === availId) return false;
-  //     else return true;
-  //   })
-
-  //   this.preserveDateFormat({enumerators});
-
-  //   this.setState({
-  //     enumerators: enumerators
-  //   }, this.checkValidity)
-  // }
-
 
   checkValidity = (type, cb) => {
     let stateObj = JSON.parse(JSON.stringify(this.state));
@@ -772,25 +688,7 @@ class App extends React.Component {
 
     timeBlock[startOrEnd].setHours(hours, minutes, 0, 0);
 
-    // determine validity due to order
-    // if (timeBlock.startTime >= timeBlock.endTime) timeBlock.valid = false;
-    // else timeBlock.valid = true;
-
-    // determine validity due to overlap
-
-    // determine validity due to order of start and end time
-    // if (timeBlock.startTime >= timeBlock.endTime) timeBlock.valid=false;
-
-    // this.setState(stateObj, ()=> {
-    //   this.updateCurrentTimeIntervals(type, this.checkValidity);
-    // });
-
-    // this.setState(stateObj, ()=>{
-    //   this.checkValidity(null, ()=>{
-    //     this.updateCurrentTimeIntervals(type);
-    //   })
-    // })
-    this.updateState(stateObj);
+    return this.updateState(stateObj);
   
   }
 
@@ -810,8 +708,6 @@ class App extends React.Component {
           deleteEnumerator={this.deleteEnumerator}
           changeEnumeratorName={this.changeEnumeratorName}
 
-          // addAvailability={this.addAvailability}
-          // deleteAvailability={this.deleteAvailability}
           deleteTime={this.deleteTime}
           modifyTime={this.modifyTime}
           addTime={this.addTime}
@@ -868,9 +764,44 @@ class App extends React.Component {
 
     return (
       <div className="App">
+        <Modal id="help-modal" show={this.state.showModal} onHide={this.setShowModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Enumerator Scheduler Help</Modal.Title>
+          </Modal.Header>
+            <Modal.Body>
+              This tool is designed to help you as a Census Field Supervisor consolidate and view the schedules of your enumerators, so that you can better plan your day as to when you will work your shift.<br/><br/>
+
+              You are looking at one day at a time, which can be adjusted by the Select Date input.<br/><br/> 
+
+              You can create new enumerators by selecting the 'Add Enumerator' button.<br/><br/>
+              
+              Once you've created an enumerator, enumerators can be deleted at any time by selecting the X in the top right corner of each Enumerator section.<br/><br/>
+
+              You can add times to each enumerator for the selected day that you're looking at, by clicking 'Add Availability', 'Add Assigned Shift', or 'Add Claimed Shift'. Each block of time will default to 8:00 AM - 8:00 AM until changed. If a block is invalid, it will be highlighted red and a warning will appear.<br/><br/>
+
+              You can also adjust each enumerator's priority to indicate whether or not they require more supervision. Each enumerator's score can be from 0 to 9. For example, if you have an enumerator whom you feel requires no supervision, you can put their priority score at 0. However, if you feel that they will need attention and it is important that you stay in contact with them on their shift, then you can give them a higher priority score.<br/><br/>
+
+              At the bottom of the page are the bars that indicate all of the time blocks for the day, both for availability, and for assigned shifts. The Availability bar corresponds to all of your enumerators' availability, and the Assigned Shifts bar corresponds to all of your enumerators' assigned shifts. Each block is color coded to indicate how busy a block of time is, with gray indicating less busy and blue indicating more busy. For example, if from 1pm to 3pm, you have only one enumerator with availability and that enumerator has a priority score of 1, but from 3pm to 5pm you have 3 enumerators with availability and their priority scores are higher, then the Availability bar would be gray for 1-3 and blue for 3-5. Hovering the mouse over any section of the bar will indicate what the times of that block are and what the priority is.<br/><br/>
+
+              Good luck!
+
+            </Modal.Body>
+            <Modal.Footer className="justify-content-center">
+              <button onClick={this.setShowModal}>
+                Finished
+              </button>
+            </Modal.Footer>
+
+        </Modal>
         <Navbar className="nav">
           <div className="mx-auto">
             Enumerator Time Viewer    
+          </div>
+          <div
+            className="float-sm-right help-modal-question-mark"
+            onClick={this.setShowModal}
+          >
+            ?
           </div>
         </Navbar>
         <Container fluid className="enumerator-master-container">
@@ -926,74 +857,32 @@ class App extends React.Component {
             <option value="9:00 PM" />
           </datalist>
           <Row className="justify-content-center p-2">
-            <h5>
+            <h5 className="m-2">
               Select Date:
             </h5>
-          </Row>
-          <Row className="justify-content-center p-2">
             <input 
               type="date" 
               value={formatDateForDateInput(this.state.currentDate)} 
               onChange={this.changeDate} 
+              className="m-2"
             />
           </Row>
-          <Row className="justify-content-center p-4">
-            <button onClick={this.addEnumerator}>
+          <Row className="justify-content-center p-2">
+            <button id="add-enumerator-button" onClick={this.addEnumerator}>
               Add Enumerator
             </button>
           </Row>
           {enumRows}
-          <Container className="optimizer text-center">
-            <Row>
-              <Col sm={6}>
-                <Row className="optimizer-header justify-content-center">
-                  <h4>Availability</h4>
-                </Row>
-                <Row>
-                  <Col>
-                    <h5>Time</h5>
-                  </Col>
-                  <Col>
-                    <h5>Priority</h5>
-                  </Col>
-                </Row>
-                {availabilityRows}
-              </Col>
-              <Col sm={6}>
-                <Row className="justify-content-center">
-                  <h4 className="optimizer-header">Assigned Shifts</h4>
-                </Row>
-                <Row>
-                  <Col>
-                    <h5>Time</h5>
-                  </Col>
-                  <Col>
-                    <h5>Priority</h5>
-                  </Col>
-                </Row>
-                {assignedShiftRows}
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                {<PriorityBlocks currentWindows={this.state.currentAvailabilityWindows}/>}
-              </Col>
-              <Col>
-                {<PriorityBlocks currentWindows={this.state.currentAssignedShiftWindows}/>}
-              </Col>
-            </Row>
-            
-            
-          </Container>
-          <Container className="experiment-zone">
-            <PriorityBlocksAlt currentWindows={this.state.currentAvailabilityWindows}/>
-            <ColorDisplay />
-          </Container>
+        </Container>
+        <Container fluid id="time-display">
+          <h5>Availability</h5>
+          <PriorityBlocks currentWindows={this.state.currentAvailabilityWindows}/>
+          <h5>Assigned Shifts</h5>
+          <PriorityBlocks currentWindows={this.state.currentAssignedShiftWindows}/>
         </Container>
       </div>
     );
   }
-  
 }
 
 function Enumerator(props) {
@@ -1002,16 +891,10 @@ function Enumerator(props) {
 
   let { id, name, priority, availability, assignedShifts, claimedShifts } = props.enumerator;
 
-
-  // let options = (matchTime) => TIMES.map(time => {
-  //   return <option key={time} value={time} />
-  // })
-
   let currentYear = currentDate.getUTCFullYear();
   let currentMonth = currentDate.getUTCMonth();
   let currentDay = currentDate.getUTCDate();
   
-
   availability = availability.filter((block) => {
     let startDateFormatted = formatDateForDateInput(block.startTime);
     let endDateFormatted = formatDateForDateInput(block.endTime);
@@ -1096,25 +979,7 @@ function Enumerator(props) {
           modifyTime={props.modifyTime} 
           deleteTime={props.deleteTime} 
           enumeratorId={id}
-        />
-        {/* <Col className="enumerator-col enumerator-availability-col" sm={6} md={4}>
-          <Row className="justify-content-center">
-            <h6>
-              Availability
-            </h6>
-          </Row>
-          <Row className="justify-content-center">
-            {renderedAvailability}
-          </Row>
-          <Row className="justify-content-center">
-            <button onClick={() => {
-              console.log(id);
-              props.addTime(id, AVAILABILITY);
-            }}>
-              Add Availability
-            </button>
-          </Row>
-        </Col> */}
+        />      
         <EnumeratorCol 
           blocks={assignedShifts} 
           header="Assigned Shifts" 
@@ -1123,24 +988,7 @@ function Enumerator(props) {
           modifyTime={props.modifyTime} 
           deleteTime={props.deleteTime} 
           enumeratorId={id}
-        />
-        {/* <Col className="enumerator-col enumerator-assigned-shift-col" sm={6} md={4}>
-          <Row className="justify-content-center">
-            <h6>
-              Assigned Shifts
-            </h6>
-          </Row>
-          <Row className="justify-content-center">
-            {renderedAssignedShifts}
-          </Row>
-          <Row className="justify-content-center">
-            <button onClick={()=>{
-              props.addTime(id, ASSIGNED_SHIFTS);
-            }}>
-              Add Assigned Shift
-            </button>
-          </Row>
-        </Col> */}
+        />  
         <EnumeratorCol 
           blocks={claimedShifts} 
           header="Claimed Shifts" 
@@ -1150,116 +998,10 @@ function Enumerator(props) {
           deleteTime={props.deleteTime} 
           enumeratorId={id}
         />
-        {/* <Col className="enumerator-col enumerator-claimed-time-col" sm={6} md={4}>
-          <Row className="justify-content-center">
-            <h6>
-              Claimed Shifts
-            </h6>
-          </Row>
-          <Row className="justify-content-center">
-            {renderedClaimedShifts}
-          </Row>
-          <Row className="justify-content-center">
-            <button onClick={()=>{
-              props.addTime(id, CLAIMED_SHIFTS)
-            }}>
-              Add Claimed Shift
-            </button>
-          </Row>
-        </Col> */}
       </Row>  
     </Container>
   )
 }
-
-// function renderBlocks(showWarning, hideWarning, type, blockSection, modifyTime, deleteTime, id) {
-
-//   let rendered = blockSection.map((block) => {
-//     // console.log(block);
-//     let startOptions = TIMES.map(time => {
-//       let selected = false;
-//       if (formatDateForTimeInput(block.startTime) == time) {
-//         selected = true;
-//       }
-//       return <option key={time} value={time} selected={selected}>{time}</option>
-//     })
-
-//     let endOptions = TIMES.map(time => {
-//       let selected = false;
-//       if (formatDateForTimeInput(block.endTime) == time) {
-//         selected = true;
-//       }
-//       return <option key={time} value={time} selected={selected}>{time}</option>
-//     })
-
-//     // console.log(block.startTime, block.endTime, block.valid);
-
-//     var [warning, setWarning] = useState(false);
-
-//     // OVERRIDE
-//     showWarning = (e) => {
-//       if (!block.valid) setWarning(true);
-//       if (warning) console.log(warning);
-//     }
-
-//     hideWarning = (e) => {
-//       setWarning(false);
-//     }
-
-
-//     return (
-//       <Row 
-//         key={block.id} 
-//         className="rendered-time-block d-flex"
-//         onMouseEnter={(e)=>{showWarning(e)}}
-//         // onMouseLeave={hideWarning}
-//       >
-//         <select
-//           list="times"
-//           key={`availability-${block.id}-start`}
-//           className={`time-input m-2 ${block.valid ? "" : "time-input-invalid"}`}
-//           onChange={(e) => {
-//             modifyTime(type, START_TIME, id, block.id, e.target.value)
-//           }}
-//         >
-//           {startOptions}
-//         </select>
-//           to
-//         <select
-//           list="times"
-//           key={`availability-${block.id}-end`}
-//           className={`time-input m-2 ${block.valid ? "" : "time-input-invalid"}`}
-//           onChange={(e)=>{
-//             modifyTime(type, END_TIME, id, block.id, e.target.value)
-//           }}
-//         >
-//           {endOptions}
-//         </select>
-//         <button
-//           className="close m-1"
-//           onClick={()=>{deleteTime(type, id, block.id)}}
-//         >
-//           &times;
-//         </button>
-//         {warning ? (
-//           <Col className="warning">
-//             Make sure that the end time is later than the start time, and that this time window does not overlap any other windows.
-//           </Col>
-//         ) : ""}
-//       </Row>
-//     )
-//   })
-
-//   return rendered;
-// }
-
-// function Warning() {
-//   return (
-//     <div>
-//       Make sure that the end time is later than the start time, and that this time window does not overlap any other windows.
-//     </div>
-//   )
-// }
 
 
 function Block(props) {
@@ -1322,134 +1064,97 @@ function Block(props) {
           &times;
         </button>
       </Row>
-      {/* {warning ? (
-        <Row className="warning xs-12">
-          <span className="warning-span">
-            Make sure that the end time is later than the start time, and that this time window does not overlap any other windows.
-          </span>
-        </Row>) : ""
-      } */}
     </Container>
   )
 }
 
-function PriorityBlocks(props) {
-  let {currentWindows} = props;
 
-  console.log(props);
 
-  if (currentWindows===undefined || currentWindows.length===0) {
-    // console.log("currentWindows no good");
-    // console.log(currentWindows);
-    return null;
-  } else {
-    for (let cw of currentWindows){
-      // console.log(cw.start, cw.start instanceof Date);
-      if (!cw.start instanceof Date) {
-        console.log("caught");
-        return null;
-      }
+class PriorityBlocks extends React.Component {
 
-      // console.log(cw.end, cw.end instanceof Date);
-      if (!cw.end instanceof Date) {
-        console.log("caught");
-        return null;
-      }
+  constructor(props) {
+    super(props);
+    this.state = {
+      detail: ""
     }
+  }
 
-    // console.log("should be good", currentWindows);
+  render() {
+    let maxScore = Math.max(...this.props.currentWindows.map(cw => cw.priority))
+    let minTimeIndex = Math.min(...this.props.currentWindows.map(cw => TIMES.indexOf(formatDateForTimeInput(cw.start))));
+    let maxTimeIndex = Math.max(...this.props.currentWindows.map(cw => TIMES.indexOf(formatDateForTimeInput(cw.end))));
+    const GRAY = [226, 226, 226]
+    const LIGHTBLUE = [173, 216, 230]
+    let detail = "";
+    let blocks = this.props.currentWindows.map(cw => {
 
-    currentWindows.forEach(cw => {
-      cw.start = formatDateForTimeInput(new Date(cw.start));
-      cw.end = formatDateForTimeInput(new Date(cw.end));
-    })
-
-    // console.log(currentWindows);
-
-    // windows are already sorted by start time
-    let minimumTime = currentWindows[0].start;
-    let minimumTimeIndex = TIMES.indexOf(minimumTime);
-    let maximumTime = currentWindows[currentWindows.length-1].end;
-    let maximumTimeIndex = TIMES.indexOf(maximumTime);
-
-    let timeRange = TIMES.slice(minimumTimeIndex, maximumTimeIndex-minimumTimeIndex+1);
-
-    let times = timeRange.map(time => <p style={{margin: 0}}>{time}</p>)
-
-    let maxPriority = Math.max(...currentWindows.map(cw => cw.priority));
-
-    
-
-    let blocks = currentWindows.map(cw => {
-      // hsla(179, 100%, range(85-15), 1)
-      let light = 85-(cw.priority/(maxPriority)*70);
-      // console.log(cw.priority);
-      // console.log(maxPriority);
-      // console.log(light);
-      // console.log(`hsla(179, 100%, ${light}%, 1)`)
-
-      let timeDifference = timeRange.indexOf(cw.end) - timeRange.indexOf(cw.start);
-
-      return <div style={{
-        border: "1px solid black",
-        color: "black",
-        backgroundColor: `hsla(179, 100%, ${light}%, 1)`,
-        height: `${timeDifference*23.636}px`
-      }}>{cw.priority}</div>
+      let start = formatDateForTimeInput(cw.start)
+      let end = formatDateForTimeInput(cw.end);
+  
+      let compColor = [];
+      for (let i=0; i<3; i++) {
+        compColor.push(GRAY[i] - ((cw.priority/maxScore) * (GRAY[i]-LIGHTBLUE[i])))
+      }
+  
+      console.log(TIMES, cw);
+      console.log(TIMES.indexOf(end), TIMES.indexOf(start), maxTimeIndex, minTimeIndex)
+      console.log((TIMES.indexOf(end)-TIMES.indexOf(start)) * 100 / (maxTimeIndex-minTimeIndex))
+  
+      return (
+        <div 
+          className="priority-block"
+          style={{
+            height: '45px',
+            width: `${(TIMES.indexOf(end)-TIMES.indexOf(start)) * 100 / (maxTimeIndex-minTimeIndex)}%`,
+            backgroundColor: `rgb(${compColor[0]}, ${compColor[1]}, ${compColor[2]})`,
+            
+          }}
+          onMouseEnter={() => {
+            this.setState({
+              detail : `${start} - ${end}, Priority: ${cw.priority}`
+            })
+          }}
+          onMouseLeave={()=>{this.setState({detail : ""})}}
+      >
+        <div className="priority-circle">
+          {cw.priority}
+        </div>
+      </div>
+      )
     })
 
     return (
-      <Container>
-        <Row>
-          <Col>
-            {times}
-          </Col>
-          <Col>
-            {blocks}
-          </Col>
+      <div>
+        <Row className="priority-blocks-row">
+          {blocks}
         </Row>
-      </Container>
-    )
+        <Row className="hover-display-area">
+          {this.state.detail}
+        </Row>
+      </div>
+    );
   }
 }
 
-
-function PriorityBlocksAlt(props) {
-  console.log(props.currentWindows);
-  let maxScore = Math.max(...props.currentWindows.map(cw => cw.priority))
-  let minTimeIndex = Math.min(...props.currentWindows.map(cw => TIMES.indexOf(cw.start)));
-  let maxTimeIndex = Math.max(...props.currentWindows.map(cw => TIMES.indexOf(cw.end)));
-  // props.currentWindows : start, end, priority
-
-  let blocks = props.currentWindows.map(cw => {
-    return (
-      <div style={{
-        height: '45px',
-        backgroundColor: `hsla(${179+(cw.priority/maxScore)*181}, 100%, 55%, 1)`,
-        width: `${(TIMES.indexOf(cw.end)-TIMES.indexOf(cw.start)) * 100 / (maxTimeIndex-minTimeIndex)}%`
-      }}
-      ></div>
-    )
-  })
-
-
-  return (
-    <Row>
-      {blocks}
-    </Row>
-  )
-}
-
-
+// functional component for displaying color gradient
 function ColorDisplay(props) {
+  var gray = [226, 226, 226]
+  var lightblue = [173, 216, 230]
   const BLOCK_COUNT = 15;
   let count = 0;
   let blocks = [];
   while (count < BLOCK_COUNT) {
+
+    let compColor = [];
+
+    for (let i=0; i<3; i++) {
+      compColor.push(gray[i] - ((count/BLOCK_COUNT) * (gray[i]-lightblue[i])))
+    }
+
     let style = {
       width: `${100/BLOCK_COUNT}%`,
       height: '15px',
-      backgroundColor: `hsla(${179+(count/BLOCK_COUNT)*181}, 100%, 55%, 1)`
+      backgroundColor: `rgb(${compColor[0]}, ${compColor[1]}, ${compColor[2]})`
     }
 
     blocks.push(<div style={style}></div>)
@@ -1464,7 +1169,6 @@ function ColorDisplay(props) {
 
 
 function EnumeratorCol(props) {
-  // props: blocks, header, type, addTime, modifyTime, deleteTime, enumeratorId
   let renderedBlocks = props.blocks.map(block => <Block type={props.type} block={block} modifyTime={props.modifyTime} deleteTime={props.deleteTime} id={props.enumeratorId}>
   </Block>)
 
